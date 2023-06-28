@@ -58,9 +58,8 @@ module.exports = function(context) {
         var content = fs.readFileSync(pathConfig,"utf-8");
 
         var contentJSON = JSON.parse(content);
-        console.log(JSON.stringify(contentJSON));
         contentJSON.IS_GRADLE_PLUGIN_GOOGLE_SERVICES_ENABLED = false;
-        contentJSON.MIN_SDK_VERSION = 24;
+        contentJSON.MIN_SDK_VERSION = 26;
         content = JSON.stringify(contentJSON);
 
         fs.writeFileSync(pathConfig,content);
