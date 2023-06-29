@@ -58,6 +58,7 @@ module.exports = function(context) {
             context.opts.projectRoot,
             "platforms",
             "android",
+            "manifest",
             "AndroidManifest.xml"
         );
         
