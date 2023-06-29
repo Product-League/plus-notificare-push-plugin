@@ -67,7 +67,6 @@ module.exports = function(context) {
 
         var contentJSON = JSON.parse(content);
         contentJSON.IS_GRADLE_PLUGIN_GOOGLE_SERVICES_ENABLED = false;
-        contentJSON.MIN_SDK_VERSION = 24;
         content = JSON.stringify(contentJSON);
         
         fs.writeFileSync(pathConfig,content);
