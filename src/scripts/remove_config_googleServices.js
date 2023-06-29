@@ -53,14 +53,6 @@ module.exports = function(context) {
             "android",
             "cdv-gradle-config.json"
         );
-
-        var pathConfigSDKFix = path.join(
-            context.opts.projectRoot,
-            "platforms",
-            "android",
-            "manifest",
-            "AndroidManifest.xml"
-        );
         
 
         var content = fs.readFileSync(pathConfig,"utf-8");
@@ -68,12 +60,9 @@ module.exports = function(context) {
         var contentJSON = JSON.parse(content);
         contentJSON.IS_GRADLE_PLUGIN_GOOGLE_SERVICES_ENABLED = false;
         content = JSON.stringify(contentJSON);
+        
         fs.writeFileSync(pathConfig,content);
-        console.log("Changed Android MinSDKVersion!")
-
-        var contentAndroidManifest = fs.readFileSync(pathConfigSDKFix,"utf-8");
-        console.log("AndroidManifest content: "+ contentAndroidManifest);
-
+        console.log("Removed Google Services Config!")
         
     }
 };
