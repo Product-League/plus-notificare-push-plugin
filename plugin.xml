@@ -51,6 +51,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </config-file>
+        <edit-config file="AndroidManifest.xml" target="/manifest/uses-sdk" mode="merge">
+                <uses-sdk tools:overrideLibrary="com.outsystems.plugins.keystore" />
+        </edit-config>
 
         <source-file src="src/android/NotificarePushPlugin.kt" target-dir="app/src/main/kotlin/re/notifica/push/cordova" />
         <source-file src="src/android/NotificarePushPluginEventBroker.kt" target-dir="app/src/main/kotlin/re/notifica/push/cordova" />
