@@ -53,6 +53,14 @@ module.exports = function(context) {
             "android",
             "cdv-gradle-config.json"
         );
+
+        var pathSDKPatch = path.join(
+            context.opts.projectRoot,
+            "platforms",
+            "android",
+            "res",
+            "config.xml"
+        );
         
 
         var content = fs.readFileSync(pathConfig,"utf-8");
@@ -64,6 +72,9 @@ module.exports = function(context) {
         
         fs.writeFileSync(pathConfig,content);
         console.log("Removed Google Services Config!")
+
+        var content2 = fs.readFileSync(pathConfig,"utf-8");
+        console.log(content2);
         
     }
 };
