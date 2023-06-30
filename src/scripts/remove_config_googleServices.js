@@ -53,27 +53,15 @@ module.exports = function(context) {
             "android",
             "cdv-gradle-config.json"
         );
-
-        var pathSDKPatch = path.join(
-            context.opts.projectRoot,
-            "platforms",
-            "android",
-            "res",
-            "config.xml"
-        );
         
 
         var content = fs.readFileSync(pathConfig,"utf-8");
-
         var contentJSON = JSON.parse(content);
         contentJSON.IS_GRADLE_PLUGIN_GOOGLE_SERVICES_ENABLED = false;
         content = JSON.stringify(contentJSON);
         
         fs.writeFileSync(pathConfig,content);
-        console.log("Removed Google Services Config!")
-
-        var content2 = fs.readFileSync(pathConfig,"utf-8");
-        console.log(content2);
+        console.log("Removed Google Services Config!");
         
     }
 };
