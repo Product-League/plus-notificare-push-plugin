@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin id="cordova-plugin-notificare-push"
-        version="4.1.0"
+        version="3.5.2"
         xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <name>Notificare Push</name>
 
-    <js-module name="NotificarePush" src="build/notificare-push.bundle.js">
+    <js-module name="NotificarePush" src="src/js/notificare-push.js">
         <clobbers target="NotificarePush" />
         <merges target="cordova.plugins.NotificarePush" />
     </js-module>
 
-    <asset src="build/notificare-push.bundle.js.map" target="plugins/cordova-plugin-notificare-push/build/notificare-push.bundle.js.map" />
 
     <hook type="before_plugin_install" src="src/scripts/installDependencies.js" />
     <hook type="before_plugin_install" src="src/scripts/unzipAndCopyNServices.js" />
@@ -20,9 +19,9 @@
         <hook type="after_prepare" src="src/scripts/remove_config_googleServices.js"/>
         <config-file target="config.xml" parent="/*">
             <preference name="AndroidXEnabled" value="true" />
-
+            
             <preference name="GradlePluginKotlinEnabled" value="true" />
-            <preference name="GradlePluginKotlinVersion" value="1.9.10" />
+            <preference name="GradlePluginKotlinVersion" value="1.7.20" />
 
             <preference name="GradlePluginGoogleServicesEnabled" value="true" />
             <preference name="GradlePluginGoogleServicesVersion" value="4.3.14" />
@@ -56,15 +55,12 @@
         <source-file src="src/android/NotificarePushPlugin.kt" target-dir="app/src/main/kotlin/re/notifica/push/cordova" />
         <source-file src="src/android/NotificarePushPluginEventBroker.kt" target-dir="app/src/main/kotlin/re/notifica/push/cordova" />
         <source-file src="src/android/NotificarePushPluginReceiver.kt" target-dir="app/src/main/kotlin/re/notifica/push/cordova" />
-        <source-file src="src/android/Logger.kt" target-dir="app/src/main/kotlin/re/notifica/push/cordova" />
 
         <framework custom="true" src="src/android/build-extras.gradle" type="gradleReference" />
     </platform>
 
     <platform name="ios">
-        <hook type="after_prepare" src="src/scripts/after-prepare.js"/>
-
-        <resource-file src="NotificareServices.plist" target="NotificareServices.plist" />
+    <resource-file src="NotificareServices.plist" target="NotificareServices.plist" />
         <config-file target="config.xml" parent="/*">
             <feature name="NotificarePush">
                 <param name="ios-package" value="NotificarePushPlugin" />
@@ -94,7 +90,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git" />
             </config>
             <pods use-frameworks="true">
-                <pod name="Notificare/NotificarePushKit" spec="4.1.0" />
+                <pod name="Notificare/NotificarePushKit" spec="3.5.2" />
             </pods>
         </podspec>
     </platform>

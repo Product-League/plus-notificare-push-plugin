@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-notificare-push",
-  "version": "4.1.0",
+  "version": "3.5.2",
   "description": "Notificare Push Cordova Plugin.",
   "author": "Notificare <info@notifica.re> (https://notificare.com)",
   "license": "MIT",
@@ -26,24 +26,11 @@
     "CHANGELOG.md",
     "MIGRATION.md"
   ],
-  "scripts": {
-    "build": "yarn clean; yarn build:typescript; yarn build:bundle",
-    "build:typescript": "tsc",
-    "build:bundle": "rollup --config",
-    "clean": "rm -rf build",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "pack": "npm pack",
-    "prepack": "yarn build; yarn docs:replace-symbolic-links",
-    "postpack": "yarn docs:create-symbolic-links",
-    "prepare": "yarn build",
-    "docs:create-symbolic-links": "rm README.md CHANGELOG.md MIGRATION.md; ln -s ../../README.md ../../CHANGELOG.md ../../MIGRATION.md .",
-    "docs:replace-symbolic-links": "rm README.md CHANGELOG.md MIGRATION.md; cp ../../README.md ../../CHANGELOG.md ../../MIGRATION.md ."
-  },
   "peerDependencies": {
-    "cordova-plugin-notificare": "4.1.0"
+    "cordova-plugin-notificare": "3.5.2"
   },
   "devDependencies": {
-    "cordova-plugin-notificare": "4.1.0"
+    "cordova-plugin-notificare": "3.5.2"
   },
   "cordova": {
     "id": "cordova-plugin-notificare-push",
@@ -60,5 +47,6 @@
         "cordova-ios": ">=5.0.0"
       }
     }
-  }
+  },
+  "gitHead": "1a4c78c4827e130206c111e5e5efb72f5c8503e0"
 }

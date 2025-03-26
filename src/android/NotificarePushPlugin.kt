@@ -23,9 +23,8 @@ import org.apache.cordova.PluginResult
 import org.json.JSONArray
 import org.json.JSONObject
 import re.notifica.Notificare
-import re.notifica.NotificareCallback
+import re.notifica.internal.NotificareLogger
 import re.notifica.push.ktx.push
-import re.notifica.push.models.NotificarePushSubscription
 
 class NotificarePushPlugin : CordovaPlugin() {
     private var shouldShowRationale = false
@@ -40,18 +39,11 @@ class NotificarePushPlugin : CordovaPlugin() {
         NotificarePushPluginEventBroker.dispatchEvent("notification_settings_changed", allowedUI)
     }
 
-    private val subscriptionObserver = Observer<NotificarePushSubscription?> { subscription ->
-        NotificarePushPluginEventBroker.dispatchEvent("subscription_changed", subscription?.toJson())
-    }
-
     override fun pluginInitialize() {
-        logger.hasDebugLoggingEnabled = Notificare.options?.debugLoggingEnabled ?: false
-
         Notificare.push().intentReceiver = NotificarePushPluginReceiver::class.java
 
         onMainThread {
             Notificare.push().observableAllowedUI.observeForever(allowedUIObserver)
-            Notificare.push().observableSubscription.observeForever(subscriptionObserver)
         }
 
         val intent = cordova.activity.intent
@@ -81,7 +73,6 @@ class NotificarePushPlugin : CordovaPlugin() {
     override fun onDestroy() {
         onMainThread {
             Notificare.push().observableAllowedUI.removeObserver(allowedUIObserver)
-            Notificare.push().observableSubscription.removeObserver(subscriptionObserver)
         }
     }
 
@@ -95,8 +86,6 @@ class NotificarePushPlugin : CordovaPlugin() {
             "setCategoryOptions" -> setCategoryOptions(args, callback)
             "setPresentationOptions" -> setPresentationOptions(args, callback)
             "hasRemoteNotificationsEnabled" -> hasRemoteNotificationsEnabled(args, callback)
-            "getTransport" -> getTransport(args, callback)
-            "getSubscription" -> getSubscription(args, callback)
             "allowedUI" -> allowedUI(args, callback)
             "enableRemoteNotifications" -> enableRemoteNotifications(args, callback)
             "disableRemoteNotifications" -> disableRemoteNotifications(args, callback)
@@ -142,40 +131,18 @@ class NotificarePushPlugin : CordovaPlugin() {
         callback.success(Notificare.push().hasRemoteNotificationsEnabled)
     }
 
-    private fun getTransport(@Suppress("UNUSED_PARAMETER") args: CordovaArgs, callback: CallbackContext) {
-        callback.nullableSuccess(Notificare.push().transport?.rawValue)
-    }
-
-    private fun getSubscription(@Suppress("UNUSED_PARAMETER") args: CordovaArgs, callback: CallbackContext) {
-        callback.nullableSuccess(Notificare.push().subscription?.toJson())
-    }
-
     private fun allowedUI(@Suppress("UNUSED_PARAMETER") args: CordovaArgs, callback: CallbackContext) {
         callback.success(Notificare.push().allowedUI)
     }
 
     private fun enableRemoteNotifications(@Suppress("UNUSED_PARAMETER") args: CordovaArgs, callback: CallbackContext) {
-        Notificare.push().enableRemoteNotifications(object : NotificareCallback<Unit> {
-            override fun onSuccess(result: Unit) {
-                callback.void()
-            }
-
-            override fun onFailure(e: Exception) {
-                callback.error(e.message)
-            }
-        })
+        Notificare.push().enableRemoteNotifications()
+        callback.void()
     }
 
     private fun disableRemoteNotifications(@Suppress("UNUSED_PARAMETER") args: CordovaArgs, callback: CallbackContext) {
-        Notificare.push().disableRemoteNotifications(object : NotificareCallback<Unit> {
-            override fun onSuccess(result: Unit) {
-                callback.void()
-            }
-
-            override fun onFailure(e: Exception) {
-                callback.error(e.message)
-            }
-        })
+        Notificare.push().disableRemoteNotifications()
+        callback.void()
     }
 
     // endregion
@@ -205,7 +172,7 @@ class NotificarePushPlugin : CordovaPlugin() {
         }
 
         val activity = cordova.activity ?: run {
-            logger.warning("Unable to acquire a reference to the current activity.")
+            NotificareLogger.warning("Unable to acquire a reference to the current activity.")
             callback.error("Unable to acquire a reference to the current activity.")
             return
         }
@@ -217,7 +184,7 @@ class NotificarePushPlugin : CordovaPlugin() {
 
     private fun presentPermissionRationale(@Suppress("UNUSED_PARAMETER") args: CordovaArgs, callback: CallbackContext) {
         val activity = cordova.activity ?: run {
-            logger.warning("Unable to acquire a reference to the current activity.")
+            NotificareLogger.warning("Unable to acquire a reference to the current activity.")
             callback.error("Unable to acquire a reference to the current activity.")
             return
         }
@@ -243,7 +210,7 @@ class NotificarePushPlugin : CordovaPlugin() {
             else activity.getString(android.R.string.ok)
 
         try {
-            logger.debug("Presenting permission rationale for notifications.")
+            NotificareLogger.debug("Presenting permission rationale for notifications.")
 
             activity.runOnUiThread {
                 AlertDialog.Builder(activity)
@@ -272,7 +239,7 @@ class NotificarePushPlugin : CordovaPlugin() {
         }
 
         if (hasOnGoingPermissionRequest) {
-            logger.warning("A request for permissions is already running, please wait for it to finish before doing another request.")
+            NotificareLogger.warning("A request for permissions is already running, please wait for it to finish before doing another request.")
             callback.error("A request for permissions is already running, please wait for it to finish before doing another request.")
             return
         }
@@ -377,20 +344,4 @@ private fun CallbackContext.void() {
 
 private fun CallbackContext.success(b: Boolean) {
     sendPluginResult(PluginResult(PluginResult.Status.OK, b))
-}
-
-private fun CallbackContext.nullableSuccess(str: String?) {
-    if (str == null) {
-        void()
-    } else {
-        success(str)
-    }
-}
-
-private fun CallbackContext.nullableSuccess(json: JSONObject?) {
-    if (json == null) {
-        void()
-    } else {
-        success(json)
-    }
 }

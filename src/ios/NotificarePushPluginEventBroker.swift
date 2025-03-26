@@ -35,13 +35,13 @@ class NotificarePushPluginEventBroker {
 
     static private func processQueue() {
         guard let consumer = consumer else {
-            logger.debug("Cannot process event queue without a consumer.")
+            NotificareLogger.debug("Cannot process event queue without a consumer.")
             return
         }
 
         guard !eventQueue.isEmpty else { return }
 
-        logger.debug("Processing event queue with ${eventQueue.size} items.")
+        NotificareLogger.debug("Processing event queue with ${eventQueue.size} items.")
         eventQueue.forEach { consumer($0) }
         eventQueue.removeAll()
     }
